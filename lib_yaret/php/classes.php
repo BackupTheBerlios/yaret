@@ -227,7 +227,7 @@ class yaret_vfs
 		$path_iterator->first();
 		$query_iterator->first();
 		
-		$value_sql = " (value) VALUES ('".$path_iterator->CurrentItem()->item ."')";
+		
 		
 		$path_iterator->next();
 		
@@ -237,13 +237,27 @@ class yaret_vfs
 			$query_iterator->next();
 		}
 		
+		$path_iterator->last();
 		
-		$insert_sql = "INSERT INTO ". $query_iterator->CurrentItem()->item->get_table()->get_name();
+		$value = $path_iterator->CurrentItem()->item;
+		
+		
+		$value_sql = " (value) VALUES ('".$value ."')";
+		
+		$type=$query_iterator->CurrentItem()->item->get_table()->get_name();
+		
+		$insert_sql = "INSERT INTO ".$type ;
 		
 		
 		$sql=$insert_sql.$value_sql;
 		
-		echo $sql;
+		// make dummy entry
+		
+		// in maintable
+		$sql = "INSERT INTO {$this->main_table->get_name()}" ;
+		
+		
+		die( $sql);
 		
 		$result = $this->db->query($sql);
 		
@@ -257,15 +271,7 @@ class yaret_vfs
 		
 	}
 	
-	function get_no_higher($path)
-	{
-		$path_list = $this->parse_path($path);	
-		$path_iterator = $path_list->get_iterator();
-		$query_iterator = $this->query_list->get_iterator();
-		
-		
-		die();
-	}	
+	
 	
 	function get_dirs($path)
 	{
@@ -315,53 +321,27 @@ class yaret_vfs
 		
 		// get_no_higher
 		
-		$path_iterator->first();
-		$query_iterator->first();
-	
-		while((!$path_iterator->IsDone()) and (!$query_iterator->IsDone()))
-		{
-			$path_iterator->next();
-			$query_iterator->next();
-			
-		}
 		
-		
-		$where_null_sql=" and ({$this->main_table->get_name()}_{$query_iterator->CurrentItem()->item->get_table()->get_name()}.{$this->main_table->get_name()}_id is NULL)";
-		
+
+		$where_null_sql=$query_iterator->CurrentItem()->item->get_table()->get_where_null_sql($this->main_table);
 		$join_up_sql.=$query_iterator->CurrentItem()->item->get_table()->get_connect_join_sql($this->main_table)." ";
 		$query_iterator->next();
 		
 		
 		while ((!$query_iterator->IsDone()))
 		{
-		if ($this->main_table->get_name() != $query_iterator->CurrentItem()->item->get_table()->get_name())
-		{
-			$where_null_sql.=" and ({$this->main_table->get_name()}_{$query_iterator->CurrentItem()->item->get_table()->get_name()}.{$this->main_table->get_name()}_id is NULL)";
-		}
-			
-			//$where_null_sql.=" and ({$this->main_table->get_name()}_{$query_iterator->CurrentItem()->item->get_table()->get_name()}.{$this->main_table->get_name()}_id is NULL)";
-			//$query_iterator->next();
-					
-			
-			
-			
-			
-				
-			
-			
+			$where_null_sql.=$query_iterator->CurrentItem()->item->get_table()->get_where_null_sql($this->main_table);
 			$sql[]="SELECT {$query_iterator->CurrentItem()->item->get_table()->get_name()}.id FROM ".
 							 $query_iterator->CurrentItem()->item->get_table()->get_name()." ".
 							 $query_iterator->CurrentItem()->item->get_table()->get_to_sql($this->main_table).
-							 $join_sql." ".$join_up_sql.
+							 $join_sql.$join_up_sql.
 							 " WHERE 1 ".$where_sql.$where_null_sql;
 							 
 			$item_type[]=$query_iterator->CurrentItem()->item->get_table()->get_name();
-			
-			
 			$join_up_sql.=$query_iterator->CurrentItem()->item->get_table()->get_connect_join_sql($this->main_table)." ";
-//			$where_null_sql.=" and ({$this->main_table->get_name()}_{$query_iterator->CurrentItem()->item->get_table()->get_name()}.{$this->main_table->get_name()}_id is NULL)";
 			
 			$query_iterator->next();
+			
 		}
 		print_r($sql);
 				
@@ -435,8 +415,22 @@ class yaret_table
 		{
 			
 			return "LEFT JOIN {$main_table->get_name()}_$this->name ON ({$main_table->get_name()}.id = {$main_table->get_name()}_$this->name.{$main_table->get_name()}_id) ". 
-						 "LEFT JOIN {$this->name} ON ({$main_table->get_name()}_$this->name.{$this->name}_id = {$this->get_name()}.id)";
+						 "LEFT JOIN {$this->name} ON ({$main_table->get_name()}_$this->name.{$this->name}_id = {$this->get_name()}.id) ";
 		}
+	}
+	
+	function get_where_null_sql($main_table)
+	{
+		if ($this->type == TABLE_TYPE_MAIN)
+		{	
+			return ;
+		}
+		elseif($this->type == TABLE_TYPE_MULTI_ID)
+		{
+			
+			return " and ({$main_table->get_name()}_{$this->get_name()}.{$main_table->get_name()}_id is NULL) ";
+		}
+	
 	}
 	
 	function get_connect_join_sql($main_table)

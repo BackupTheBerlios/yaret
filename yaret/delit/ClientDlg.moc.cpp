@@ -2,7 +2,7 @@
 ** form_ClientTest meta object code from reading C++ file 'ClientDlg.h'
 **
 ** Created: Sun Apr 28 22:35:43 2002
-**      by: The Qt MOC ($Id: ClientDlg.moc.cpp,v 1.1 2002/05/06 17:09:34 Tesla2k Exp $)
+**      by: The Qt MOC ($Id: ClientDlg.moc.cpp,v 1.2 2002/05/08 22:03:57 Tesla2k Exp $)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/

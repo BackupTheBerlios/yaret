@@ -1,8 +1,8 @@
 /****************************************************************************
 ** ClientTestDlg meta object code from reading C++ file 'clienttestdlg.h'
 **
-** Created: Mon May 6 10:45:46 2002
-**      by: The Qt MOC ($Id: clienttestdlg.moc.cpp,v 1.1 2002/05/06 17:08:56 Tesla2k Exp $)
+** Created: Wed May 8 23:22:49 2002
+**      by: The Qt MOC ($Id: clienttestdlg.moc.cpp,v 1.2 2002/05/08 22:03:57 Tesla2k Exp $)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/

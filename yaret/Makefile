@@ -1,4 +1,4 @@
-# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.2 $ 
 # Makefile.in generated automatically by automake 1.5 from Makefile.am.
 
 # Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
@@ -51,19 +51,19 @@ INSTALL_PROGRAM = ${INSTALL} $(INSTALL_STRIP_FLAG)
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_HEADER = $(INSTALL_DATA)
-transform = s,x,x,
+transform = s,^,i386-linux-,
 NORMAL_INSTALL = :
 PRE_INSTALL = :
 POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_alias = i686-pc-linux-gnu
-build_triplet = i686-pc-linux-gnu
-host_alias = i686-pc-linux-gnu
-host_triplet = i686-pc-linux-gnu
-target_alias = i686-pc-linux-gnu
-target_triplet = i686-pc-linux-gnu
+build_alias = i386-linux
+build_triplet = i386-pc-linux-gnu
+host_alias = i386-linux
+host_triplet = i386-pc-linux-gnu
+target_alias = i386-linux
+target_triplet = i386-pc-linux-gnu
 AMTAR = ${SHELL} /home/jascha/Projekte/yaret/codings/yaret/admin/missing --run tar
 ARTSCCONFIG = @ARTSCCONFIG@
 AS = @AS@

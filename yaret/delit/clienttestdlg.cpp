@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <qlistview.h>
 #include <stdlib.h>
+#include <qdom.h>
+#include <qfile.h>
 #include "database.h"
 
 // #include "ClientDlg.h"
@@ -58,7 +60,7 @@ SubTablesBox->hide();
 
 connect( SubTablesBox, SIGNAL( activated(int) ), this, SLOT( SubTableChangedSlot() ) );
 connect( FieldTypBox, SIGNAL( activated(int) ), this, SLOT( FieldTypChangedSlot() ) );
-
+Catalog=NULL;
 }
 
 ClientTestDlg::~ClientTestDlg(){
@@ -378,8 +380,6 @@ return NULL;
 	
 void ClientTestDlg::TestSlot()
 {
-cout << "test";
-
 }
 
 
@@ -422,6 +422,26 @@ void ClientTestDlg::SaveSlot()
 {
 
 CreateCPPCatalog();
+if (Catalog->name=="")
+{
+
+	QMessageBox::warning(this,"No Catalog Name","You must give the Catalog a name before you can save it","OK");
+ 	Save->setDown(false);
+	return;
+}
+
+QDomDocument doc( "Catalog" );
+
+doc.appendChild(Catalog->ToXML(doc));
+
+QString xml = doc.toString();
+
+QFile f(Catalog->name+".xml");
+f.open(IO_WriteOnly);
+f.writeBlock( xml, qstrlen(xml) );
+f.close();
+
+
 }
 
 int ClientTestDlg::GetNumberOfTables(QListViewItem* item)
@@ -465,7 +485,7 @@ QListViewItem *item;
 
 FilledCppTables=0;
 item=lvCatalogDesign->firstChild()->firstChild();
-
+if (Catalog!=NULL) delete Catalog;
 Catalog = new CppCatalog();
 Catalog->nb_tables=GetNumberOfTables(item);
 if (Catalog->nb_tables>0)
@@ -473,8 +493,6 @@ if (Catalog->nb_tables>0)
 
 do
 {
-QString a;
-a=item->text(0);
 	if (item->text(0)=="Name")
 		Catalog->name=item->text(1);
 
@@ -548,7 +566,7 @@ do
 	
 	if (field.fieldtyp>1)
 	{
-		item=item->parent();
+		item=item->parent()->firstChild();
   		while ((item->nextSibling()) && item->text(0)!="datatyp")
     	{
 			item=item->nextSibling();
@@ -568,10 +586,10 @@ item=item->firstChild();
 do
 {
 
-	if (item->text(0)=="Format")
-		tag.format=item->text(1);
-	if (item->text(0)=="Tag")
-		tag.tag=item->text(1);
+	if (item->text(0)=="Typ")
+		tag.typ=item->text(1);
+	if (item->text(0)=="Name")
+		tag.name=item->text(1);
 
 } while ((item->nextSibling()) && (item=item->nextSibling()));
 }

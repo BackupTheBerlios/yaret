@@ -50,7 +50,6 @@ class yaret_item
 	function generate_from_id($id)
 	{
 		$sql = "select * from {$this->type} where id = $id";
-		
 		//echo $sql;
 		if (!$result = $this->db->query($sql))
 		{
@@ -184,31 +183,34 @@ class yaret_vfs
 		return $path_list;
 	}
 
-	function sql_to_object_list($type,$result)
+	function sql_to_object_list($type,$results)
 	{
 		$item_list = new yaret_list();
 		
-		
-		while ($row = $result->fetchRow()) 
+		foreach ($results as $key => $result)
 		{
-			// is eigentlich type aber field gibt das gleiche ich bin zu faul das orderntlich zu machen
-			$item = new yaret_item($this->db);
-			
-			
-			if ($row[0]!=NULL)
+		
+			while ($row = $result->fetchRow()) 
 			{
-				// item is a dir
-				$item->type = $type;
-				$item->generate_from_id($row[0]);
+				// is eigentlich type aber field gibt das gleiche ich bin zu faul das orderntlich zu machen
+				$item = new yaret_item($this->db);
+
+
+				if ($row[0]!=NULL)
+				{
+					// item is a dir
+					$item->type = $type[$key];
+					$item->generate_from_id($row[0]);
+				}
+				else
+				{
+					// item is a file
+					$item->type = $this->main_table->name;
+					$item->generate_from_id($row[1]);
+				}
+				$item_list->add($item);
+
 			}
-			else
-			{
-				// item is a file
-				$item->type = $this->main_table->name;
-				$item->generate_from_id($row[1]);
-			}
-			$item_list->add($item);
-				
 		}
 		
 		return $item_list;
@@ -255,26 +257,32 @@ class yaret_vfs
 		
 	}
 	
+	function get_no_higher($path)
+	{
+		$path_list = $this->parse_path($path);	
+		$path_iterator = $path_list->get_iterator();
+		$query_iterator = $this->query_list->get_iterator();
+		
+		
+		die();
+	}	
+	
 	function get_dirs($path)
 	{
 		// returns a list of dir objects
 		
 		$path_list = $this->parse_path($path);	
-		
 		$path_iterator = $path_list->get_iterator();
 		$query_iterator = $this->query_list->get_iterator();
-		
-		
 		
 		$path_iterator->first();
 		$query_iterator->first();
 		
-		
-		
 		while((!$path_iterator->IsDone()) and (!$query_iterator->IsDone()))
 		{
-			$from_sql .= $query_iterator->CurrentItem()->item->get_table()->get_from_sql($this->main_table);
+			$join_sql .= $query_iterator->CurrentItem()->item->get_table()->get_from_sql($this->main_table);
 		  $where_sql = " and ".$query_iterator->CurrentItem()->item->get_where_sql($path_iterator->CurrentItem()->item);
+
 			$path_iterator->next();
 			$query_iterator->next();
 		}
@@ -283,6 +291,7 @@ class yaret_vfs
 		{
 			if ($path_iterator->IsDone())
 			{
+			
 				// path points to a file
 				$query_iterator->last();
 				$path_iterator->last();
@@ -290,29 +299,88 @@ class yaret_vfs
 			}
 			else
 			{
+				
 				// path was too deep return no such file or directory
 				return NULL;
 			}
 		}
-		else
 		
-		$from_sql .= $query_iterator->CurrentItem()->item->get_table()->get_from_sql($this->main_table);
-		$from_sql = "FROM {$query_iterator->CurrentItem()->item->get_table()->get_name()} ";
 		
-		$select_sql = "SELECT ".$query_iterator->CurrentItem()->item->get_table()->get_name().".id as result, {$this->main_table->name}.id ";
-		$sql = $select_sql . $from_sql. " WHERE 1 " .$where_sql." GROUP BY result";
-		echo $sql;
-		// execute query
-		$result = $this->db->query($sql);
+		$from_sql = "FROM {$query_iterator->CurrentItem()->item->get_table()->get_name()} ". $query_iterator->CurrentItem()->item->get_table()->get_to_sql($this->main_table);
 
-		// Always check that $result is not an error
-		if (DB::isError($result)) 
+		$select_sql = "SELECT ".$query_iterator->CurrentItem()->item->get_table()->get_name().".id as result ";
+		
+		$sql[] = $select_sql . $from_sql.$join_sql. " WHERE 1 " .$where_sql." GROUP BY result";
+		$item_type[] = $query_iterator->CurrentItem()->item->get_table()->get_name();
+		
+		// get_no_higher
+		
+		$path_iterator->first();
+		$query_iterator->first();
+	
+		while((!$path_iterator->IsDone()) and (!$query_iterator->IsDone()))
 		{
-			die ($result->getMessage());
+			$path_iterator->next();
+			$query_iterator->next();
+			
+		}
+		
+		
+		$where_null_sql=" and ({$this->main_table->get_name()}_{$query_iterator->CurrentItem()->item->get_table()->get_name()}.{$this->main_table->get_name()}_id is NULL)";
+		
+		$join_up_sql.=$query_iterator->CurrentItem()->item->get_table()->get_connect_join_sql($this->main_table)." ";
+		$query_iterator->next();
+		
+		
+		while ((!$query_iterator->IsDone()))
+		{
+		if ($this->main_table->get_name() != $query_iterator->CurrentItem()->item->get_table()->get_name())
+		{
+			$where_null_sql.=" and ({$this->main_table->get_name()}_{$query_iterator->CurrentItem()->item->get_table()->get_name()}.{$this->main_table->get_name()}_id is NULL)";
+		}
+			
+			//$where_null_sql.=" and ({$this->main_table->get_name()}_{$query_iterator->CurrentItem()->item->get_table()->get_name()}.{$this->main_table->get_name()}_id is NULL)";
+			//$query_iterator->next();
+					
+			
+			
+			
+			
+				
+			
+			
+			$sql[]="SELECT {$query_iterator->CurrentItem()->item->get_table()->get_name()}.id FROM ".
+							 $query_iterator->CurrentItem()->item->get_table()->get_name()." ".
+							 $query_iterator->CurrentItem()->item->get_table()->get_to_sql($this->main_table).
+							 $join_sql." ".$join_up_sql.
+							 " WHERE 1 ".$where_sql.$where_null_sql;
+							 
+			$item_type[]=$query_iterator->CurrentItem()->item->get_table()->get_name();
+			
+			
+			$join_up_sql.=$query_iterator->CurrentItem()->item->get_table()->get_connect_join_sql($this->main_table)." ";
+//			$where_null_sql.=" and ({$this->main_table->get_name()}_{$query_iterator->CurrentItem()->item->get_table()->get_name()}.{$this->main_table->get_name()}_id is NULL)";
+			
+			$query_iterator->next();
+		}
+		print_r($sql);
+				
+		
+		foreach($sql as $value)
+		{
+		
+			// execute query
+			$result[] = $this->db->query($value);
+	
+			// Always check that $result is not an error
+			if (DB::isError($result)) 
+			{
+				die ($result->getMessage());
+			}
 		}	
-		
-		return $this->sql_to_object_list($query_iterator->CurrentItem()->item->get_table()->get_name(),$result);
-		
+
+		return $this->sql_to_object_list($item_type,$result);
+
 	
 	}
 	
@@ -367,7 +435,34 @@ class yaret_table
 		{
 			
 			return "LEFT JOIN {$main_table->get_name()}_$this->name ON ({$main_table->get_name()}.id = {$main_table->get_name()}_$this->name.{$main_table->get_name()}_id) ". 
-						 "LEFT JOIN $this->name ON ({$main_table->get_name()}_$this->name.{$this->name}_id = $this->name.id)";
+						 "LEFT JOIN {$this->name} ON ({$main_table->get_name()}_$this->name.{$this->name}_id = {$this->get_name()}.id)";
+		}
+	}
+	
+	function get_connect_join_sql($main_table)
+	{
+
+		if ($this->type == TABLE_TYPE_MAIN)
+		{	
+			return ;
+		}
+		elseif($this->type == TABLE_TYPE_MULTI_ID)
+		{
+			
+			return "LEFT JOIN {$main_table->get_name()}_$this->name ON ({$main_table->get_name()}.id = {$main_table->get_name()}_$this->name.{$main_table->get_name()}_id) ";
+		}
+	}
+	
+	function get_to_sql($main_table)
+	{
+		// returns tables sql to main_table1
+		if($this->type == TABLE_TYPE_MULTI_ID)
+		{
+			
+			//return // "LEFT JOIN $this->name ON ({$main_table->get_name()}_$this->name.{$this->name}_id = $this->name.id)".
+			return "LEFT JOIN {$main_table->get_name()}_$this->name ON ({$this->get_name()}.id = {$main_table->get_name()}_$this->name.{$this->get_name()}_id) ".
+						"LEFT JOIN {$main_table->get_name()} ON ({$main_table->get_name()}.id = {$main_table->get_name()}_$this->name.{$main_table->get_name()}_id) ";
+						 
 		}
 	}
 	
@@ -546,6 +641,11 @@ class yaret_list_iterator
 		return $this->current_item;
 	}
 	
+	function set_CurrentItem($item)
+	{
+		$this->current_item=$item;
+	}
+	
 	function IsDone()
 	{
 		
@@ -574,21 +674,25 @@ else
 {
 $dirs =  $yaret->get_dirs($argv[2]);
 
+
 if ($dirs==NULL)
 {
 	die("NO");
 }
+echo "\n";
 $iterator = $dirs->get_iterator();
 $iterator->first();
 while(!$iterator->IsDone())
 {
 	$fi = ($iterator->CurrentItem()->item->field_list->get_iterator());
 	
+	
 	$fi->first();
+	$fi->next();
 	while(!$fi->IsDone())
 	{
 		
-	 echo $iterator->CurrentItem()->item->type.":  ".($fi->CurrentItem()->item->key)." = ".($fi->CurrentItem()->item->value)."\n";
+	 echo $iterator->CurrentItem()->item->type.":  ".($fi->CurrentItem()->item->value)."\n";
 		$fi->next();
 	}
 

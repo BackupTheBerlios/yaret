@@ -1,0 +1,291 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>form_ClientTest</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>form_ClientTest</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>802</width>
+            <height>731</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>pb_test</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>410</x>
+                <y>420</y>
+                <width>51</width>
+                <height>51</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Test</string>
+        </property>
+    </widget>
+    <widget class="QFrame">
+        <property name="name">
+            <cstring>frameEditValue</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>410</x>
+                <y>30</y>
+                <width>240</width>
+                <height>160</height>
+            </rect>
+        </property>
+        <property name="frameShape">
+            <enum>StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+            <enum>Raised</enum>
+        </property>
+    </widget>
+    <widget class="QListView">
+        <column>
+            <property name="text">
+                <string>Catalog</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizeable">
+                <bool>true</bool>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>Value</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizeable">
+                <bool>true</bool>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>id</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizeable">
+                <bool>true</bool>
+            </property>
+        </column>
+    <item>
+        <property name="text">
+            <string>Catalog</string>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+        <property name="text">
+            <string></string>
+        </property>
+        <property name="pixmap">
+            <pixmap></pixmap>
+        </property>
+        <property name="pixmap">
+            <pixmap></pixmap>
+        </property>
+        <property name="pixmap">
+            <pixmap></pixmap>
+        </property>
+        <item>
+            <property name="text">
+                <string>Table</string>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="pixmap">
+                <pixmap></pixmap>
+            </property>
+            <property name="pixmap">
+                <pixmap></pixmap>
+            </property>
+            <property name="pixmap">
+                <pixmap></pixmap>
+            </property>
+            <item>
+                <property name="text">
+                    <string>Name</string>
+                </property>
+                <property name="text">
+                    <string>Table0</string>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+                <property name="pixmap">
+                    <pixmap></pixmap>
+                </property>
+            </item>
+        </item>
+        <item>
+            <property name="text">
+                <string>Name</string>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="text">
+                <string></string>
+            </property>
+            <property name="pixmap">
+                <pixmap></pixmap>
+            </property>
+            <property name="pixmap">
+                <pixmap></pixmap>
+            </property>
+            <property name="pixmap">
+                <pixmap></pixmap>
+            </property>
+        </item>
+    </item>
+        <property name="name">
+            <cstring>lvCatalogDesign</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>30</y>
+                <width>360</width>
+                <height>450</height>
+            </rect>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>Add_Field</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>410</x>
+                <y>290</y>
+                <width>161</width>
+                <height>41</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Add Field</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>Add_Tag</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>410</x>
+                <y>350</y>
+                <width>161</width>
+                <height>41</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Add Tag</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>Add_Table</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>410</x>
+                <y>230</y>
+                <width>161</width>
+                <height>41</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Add Table</string>
+        </property>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>Save</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>590</x>
+                <y>230</y>
+                <width>111</width>
+                <height>41</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Save</string>
+        </property>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>Add_Field</sender>
+        <signal>pressed()</signal>
+        <receiver>form_ClientTest</receiver>
+        <slot>AddFieldSlot()</slot>
+    </connection>
+    <connection>
+        <sender>lvCatalogDesign</sender>
+        <signal>selectionChanged()</signal>
+        <receiver>form_ClientTest</receiver>
+        <slot>SelectionChangedSlot()</slot>
+    </connection>
+    <connection>
+        <sender>Add_Table</sender>
+        <signal>pressed()</signal>
+        <receiver>form_ClientTest</receiver>
+        <slot>AddTableSlot()</slot>
+    </connection>
+    <connection>
+        <sender>pb_test</sender>
+        <signal>pressed()</signal>
+        <receiver>form_ClientTest</receiver>
+        <slot>TestSlot()</slot>
+    </connection>
+    <connection>
+        <sender>Add_Tag</sender>
+        <signal>pressed()</signal>
+        <receiver>form_ClientTest</receiver>
+        <slot>AddTagSlot()</slot>
+    </connection>
+    <connection>
+        <sender>Save</sender>
+        <signal>pressed()</signal>
+        <receiver>form_ClientTest</receiver>
+        <slot>SaveSlot()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>AddFieldSlot()</slot>
+    <slot>AddTableSlot()</slot>
+    <slot>AddTagSlot()</slot>
+    <slot>SelectionChangedSlot()</slot>
+    <slot>TestSlot()</slot>
+    <slot>SaveSlot()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
